@@ -19,7 +19,7 @@
 
 package com.conventnunnery.libraries.config;
 
-public interface ConventConfigurationFile {
+public interface IConfigurationFile {
 
     /**
      * Returns the name of the file

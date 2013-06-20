@@ -19,8 +19,6 @@
 
 package com.conventnunnery.libraries.config;
 
-import com.conventnunnery.libraries.config.ConventConfigurationFile;
-import com.conventnunnery.libraries.config.ConventYamlConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
@@ -33,8 +31,8 @@ import java.util.logging.Level;
 
 public class ConventConfigurationManager {
 
-    private final Map<ConventConfigurationFile, ConventYamlConfiguration> configurations;
-    private final Set<ConventConfigurationFile> configurationFiles;
+    private final Map<IConfigurationFile, ConventYamlConfiguration> configurations;
+    private final Set<IConfigurationFile> configurationFiles;
     private final Plugin plugin;
 
     /**
@@ -42,16 +40,16 @@ public class ConventConfigurationManager {
      * @param plugin Plugin that is using the manager
      * @param configurationFiles Set of ConventConfigurationFiles this plugin uses
      */
-    public ConventConfigurationManager(Plugin plugin, Set<ConventConfigurationFile> configurationFiles) {
+    public ConventConfigurationManager(Plugin plugin, Set<IConfigurationFile> configurationFiles) {
         this.plugin = plugin;
         
         this.configurationFiles = configurationFiles;
-        configurations = new HashMap<ConventConfigurationFile, ConventYamlConfiguration>();
+        configurations = new HashMap<IConfigurationFile, ConventYamlConfiguration>();
 
         loadConfig();
     }
 
-    private void createConfig(ConventConfigurationFile config) {
+    private void createConfig(IConfigurationFile config) {
         ConventYamlConfiguration file = new ConventYamlConfiguration(
                 new File(plugin.getDataFolder(), config.getFileName()));
         saveDefaults(file, config);
@@ -63,7 +61,7 @@ public class ConventConfigurationManager {
      * @param file The file to return
      * @return Object allowing access to the file itself
      */
-    public ConventYamlConfiguration getConfiguration(ConventConfigurationFile file) {
+    public ConventYamlConfiguration getConfiguration(IConfigurationFile file) {
         return configurations.get(file);
     }
 
@@ -71,7 +69,7 @@ public class ConventConfigurationManager {
      * Loads the plugin's configuration files
      */
     public final void loadConfig() {
-        for (ConventConfigurationFile file : configurationFiles) {
+        for (IConfigurationFile file : configurationFiles) {
             File confFile = new File(plugin.getDataFolder(), file.getFileName());
             if (confFile.exists()) {
                 ConventYamlConfiguration config = new ConventYamlConfiguration(
@@ -101,7 +99,7 @@ public class ConventConfigurationManager {
      * Saves the plugin's configs
      */
     public final void saveConfig() {
-        for (ConventConfigurationFile file : configurationFiles) {
+        for (IConfigurationFile file : configurationFiles) {
             if (configurations.containsKey(file)) {
                 try {
                     configurations.get(file).save(
@@ -118,7 +116,7 @@ public class ConventConfigurationManager {
      * Checks if a specified file needs to be updated by checking the version field in the supplied
      * com.conventnunnery.libraries.config.ConventYamlConfiguration against the version field in the copy of the file inside the jar.
      */
-    private boolean needToUpdate(ConventYamlConfiguration config, ConventConfigurationFile file) {
+    private boolean needToUpdate(ConventYamlConfiguration config, IConfigurationFile file) {
         YamlConfiguration inPlugin = YamlConfiguration.loadConfiguration(plugin
                 .getResource(file.getFileName()));
         if (inPlugin == null) {
@@ -132,7 +130,7 @@ public class ConventConfigurationManager {
     /*
      * Backs up the specified file by changing its name from <filename>.yml to <filename>_old.yml.
      */
-    private boolean backup(ConventConfigurationFile file) {
+    private boolean backup(IConfigurationFile file) {
         File actualFile = new File(plugin.getDataFolder(), file.getFileName());
         if (!actualFile.exists()) {
             return false;
@@ -142,11 +140,11 @@ public class ConventConfigurationManager {
     }
 
     /*
-     * Saves the default values from the copy of the com.conventnunnery.libraries.config.ConventConfigurationFile in the jar to the
+     * Saves the default values from the copy of the com.conventnunnery.libraries.config.IConfigurationFile in the jar to the
      * specified com.conventnunnery.libraries.config.ConventYamlConfiguration by clearing the file and reprinting values.
      */
     private void saveDefaults(ConventYamlConfiguration config,
-                              ConventConfigurationFile file) {
+                              IConfigurationFile file) {
         YamlConfiguration yc = ConventYamlConfiguration.loadConfiguration(plugin
                 .getResource(file.getFileName()));
         for (String key : config.getKeys(true)) {
