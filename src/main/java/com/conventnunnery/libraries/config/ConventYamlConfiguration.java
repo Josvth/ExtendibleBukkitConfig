@@ -7,7 +7,7 @@ import org.bukkit.plugin.Plugin;
 import java.io.File;
 import java.io.IOException;
 
-public class ConventYamlConfiguration extends YamlConfiguration {
+public class ConventYamlConfiguration extends YamlConfiguration implements ConventConfiguration {
 
     private final File file;
 
@@ -35,6 +35,7 @@ public class ConventYamlConfiguration extends YamlConfiguration {
      * Loads the file specified by the constructor.
      * @return if the file was correctly loaded
      */
+    @Override
     public boolean load() {
         try {
             load(file);
@@ -49,6 +50,7 @@ public class ConventYamlConfiguration extends YamlConfiguration {
      * Saves the file specified by the constructor.
      * @return if the file was correctly saved
      */
+    @Override
     public boolean save() {
         try {
             save(file);
