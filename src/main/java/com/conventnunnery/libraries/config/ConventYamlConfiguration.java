@@ -6,6 +6,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class ConventYamlConfiguration extends YamlConfiguration implements ConventConfiguration {
 
@@ -60,5 +61,11 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
             return false;
         }
     }
+
+    @Override
+    public void setDefaults(final InputStream inputStream) {
+        super.setDefaults(YamlConfiguration.loadConfiguration(inputStream));
+    }
+
 
 }
