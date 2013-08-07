@@ -55,6 +55,9 @@ public class ConventConfigurationManager {
 		if (!directory.isDirectory()) {
 			throw new IllegalArgumentException(directory.getPath() + " must be a directory");
 		}
+		if (!directory.exists() && !directory.getParentFile().mkdirs()) {
+			throw new IllegalArgumentException(directory.getPath() + " does not exist and cannot be made");
+		}
 		ConventConfigurationGroup ccg = new ConventConfigurationGroup();
 		for (File file : directory.listFiles()) {
 			if (file.getName().endsWith(".yml")) {
