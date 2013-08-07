@@ -19,9 +19,11 @@
 
 package com.conventnunnery.libraries.config;
 
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
+import java.io.IOException;
 
 public class ConventConfigurationManager {
 
@@ -34,6 +36,17 @@ public class ConventConfigurationManager {
 	 */
 	public ConventConfigurationManager(Plugin plugin) {
 		this.plugin = plugin;
+	}
+
+	public void unpackConfigurationFiles(String... configurationFiles) {
+		for (String s : configurationFiles) {
+			YamlConfiguration yc = YamlConfiguration.loadConfiguration(plugin.getResource(s));
+			try {
+				yc.save(new File(plugin.getDataFolder(), s));
+			} catch (IOException e) {
+				plugin.getLogger().warning("Could not unpack " + s);
+			}
+		}
 	}
 
 	public ConventConfiguration getConventConfiguration(File file) throws IllegalArgumentException {
