@@ -1,5 +1,7 @@
 package com.conventnunnery.libraries.config;
 
+import org.bukkit.configuration.file.FileConfiguration;
+
 import java.io.InputStream;
 
 public interface ConventConfiguration {
@@ -9,5 +11,15 @@ public interface ConventConfiguration {
     boolean save();
 
     void setDefaults(InputStream inputStream);
+
+	void saveDefaults(InputStream inputStream);
+
+	boolean needToUpdate();
+
+	boolean backup();
+
+	String getName();
+
+	FileConfiguration getFileConfiguration();
 
 }

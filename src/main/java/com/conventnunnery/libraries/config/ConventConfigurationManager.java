@@ -19,140 +19,49 @@
 
 package com.conventnunnery.libraries.config;
 
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
 
 public class ConventConfigurationManager {
 
-    private final Map<IConfigurationFile, ConventYamlConfiguration> configurations;
-    private final Set<IConfigurationFile> configurationFiles;
-    private final Plugin plugin;
+	private final Plugin plugin;
 
-    /**
-     * Instantiates a new version of the configuration manager for a plugin
-     * @param plugin Plugin that is using the manager
-     * @param configurationFiles Set of ConventConfigurationFiles this plugin uses
-     */
-    public ConventConfigurationManager(Plugin plugin, Set<IConfigurationFile> configurationFiles) {
-        this.plugin = plugin;
-        
-        this.configurationFiles = configurationFiles;
-        configurations = new HashMap<IConfigurationFile, ConventYamlConfiguration>();
+	/**
+	 * Instantiates a new version of the configuration manager for a plugin
+	 *
+	 * @param plugin Plugin that is using the manager
+	 */
+	public ConventConfigurationManager(Plugin plugin) {
+		this.plugin = plugin;
+	}
 
-        loadConfig();
-    }
+	public ConventConfiguration loadConventConfiguration(File file) throws IllegalArgumentException {
+		if (file == null) {
+			throw new IllegalArgumentException("File cannot be null");
+		}
 
-    private void createConfig(IConfigurationFile config) {
-        ConventYamlConfiguration file = new ConventYamlConfiguration(
-                new File(plugin.getDataFolder(), config.getFileName()));
-        saveDefaults(file, config);
-        configurations.put(config, file);
-    }
+		ConventConfiguration c = null;
+		if (file.getName().endsWith(".yml")) {
+			c = new ConventYamlConfiguration(plugin, file);
+		}
+		return c;
+	}
 
-    /**
-     * Returns the com.conventnunnery.libraries.config.ConventYamlConfiguration that enables access to the file itself.
-     * @param file The file to return
-     * @return Object allowing access to the file itself
-     */
-    public ConventYamlConfiguration getConfiguration(IConfigurationFile file) {
-        return configurations.get(file);
-    }
-
-    /**
-     * Loads the plugin's configuration files
-     */
-    public final void loadConfig() {
-        for (IConfigurationFile file : configurationFiles) {
-            File confFile = new File(plugin.getDataFolder(), file.getFileName());
-            if (confFile.exists()) {
-                ConventYamlConfiguration config = new ConventYamlConfiguration(
-                        confFile);
-                config.load();
-                if (needToUpdate(config, file)) {
-                    plugin.getLogger().info("Backing up " + file.getFileName());
-                    backup(file);
-                    plugin.getLogger().info("Updating " + file.getFileName());
-                    saveDefaults(config, file);
-                }
-                configurations.put(file, config);
-            } else {
-                File parentFile = confFile.getParentFile();
-                if (!parentFile.exists()) {
-                    boolean mkdirs = parentFile.mkdirs();
-                    if (!mkdirs) {
-                        continue;
-                    }
-                }
-                createConfig(file);
-            }
-        }
-    }
-
-    /**
-     * Saves the plugin's configs
-     */
-    public final void saveConfig() {
-        for (IConfigurationFile file : configurationFiles) {
-            if (configurations.containsKey(file)) {
-                try {
-                    configurations.get(file).save(
-                            new File(plugin.getDataFolder(), file.getFileName()));
-                } catch (IOException e) {
-                    plugin.getLogger().log(Level.WARNING,
-                            "Could not save " + file.getFileName(), e);
-                }
-            }
-        }
-    }
-
-    /*
-     * Checks if a specified file needs to be updated by checking the version field in the supplied
-     * com.conventnunnery.libraries.config.ConventYamlConfiguration against the version field in the copy of the file inside the jar.
-     */
-    private boolean needToUpdate(ConventYamlConfiguration config, IConfigurationFile file) {
-        YamlConfiguration inPlugin = YamlConfiguration.loadConfiguration(plugin
-                .getResource(file.getFileName()));
-        if (inPlugin == null) {
-            return false;
-        }
-        String configVersion = config.getString("version");
-        String currentVersion = inPlugin.getString("version");
-        return configVersion == null || currentVersion != null && !(configVersion.equalsIgnoreCase(currentVersion));
-    }
-
-    /*
-     * Backs up the specified file by changing its name from <filename>.yml to <filename>_old.yml.
-     */
-    private boolean backup(IConfigurationFile file) {
-        File actualFile = new File(plugin.getDataFolder(), file.getFileName());
-        if (!actualFile.exists()) {
-            return false;
-        }
-        File newFile = new File(plugin.getDataFolder(), file.getFileName().replace(".yml", "_old.yml"));
-        return actualFile.renameTo(newFile);
-    }
-
-    /*
-     * Saves the default values from the copy of the com.conventnunnery.libraries.config.IConfigurationFile in the jar to the
-     * specified com.conventnunnery.libraries.config.ConventYamlConfiguration by clearing the file and reprinting values.
-     */
-    private void saveDefaults(ConventYamlConfiguration config,
-                              IConfigurationFile file) {
-        YamlConfiguration yc = ConventYamlConfiguration.loadConfiguration(plugin
-                .getResource(file.getFileName()));
-        for (String key : config.getKeys(true)) {
-            config.set(key, null);
-        }
-        config.setDefaults(yc);
-        config.options().copyDefaults(true);
-        config.save();
-    }
+	public ConventConfigurationGroup loadConventConfigurationGroup(File directory) throws IllegalArgumentException {
+		if (directory == null) {
+			throw new IllegalArgumentException(directory.getPath() + " cannot be null");
+		}
+		if (!directory.isDirectory()) {
+			throw new IllegalArgumentException(directory.getPath() + " must be a directory");
+		}
+		ConventConfigurationGroup ccg = new ConventConfigurationGroup();
+		for (File file : directory.listFiles()) {
+			if (file.getName().endsWith(".yml")) {
+				ccg.addConventConfiguration(new ConventYamlConfiguration(plugin, file));
+			}
+		}
+		return ccg;
+	}
 
 }
