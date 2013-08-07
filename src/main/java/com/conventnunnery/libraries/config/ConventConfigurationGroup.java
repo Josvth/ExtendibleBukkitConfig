@@ -16,7 +16,8 @@ public class ConventConfigurationGroup {
 	}
 
 	public boolean addConventConfiguration(ConventConfiguration c) {
-		return conventConfigurations.add(c);
+		conventConfigurations.add(c);
+		return conventConfigurations.contains(c);
 	}
 
 	public boolean removeConventConfiguration(String name) {
@@ -37,7 +38,8 @@ public class ConventConfigurationGroup {
 	}
 
 	public boolean removeConventConfiguration(ConventConfiguration c) {
-		return conventConfigurations.remove(c);
+		conventConfigurations.remove(c);
+		return !conventConfigurations.contains(c);
 	}
 
 	public List<ConventConfiguration> getConventConfigurations() {
