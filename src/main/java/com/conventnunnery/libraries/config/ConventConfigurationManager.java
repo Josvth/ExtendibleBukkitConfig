@@ -52,6 +52,9 @@ public class ConventConfigurationManager {
 		if (directory == null) {
 			throw new IllegalArgumentException(directory.getPath() + " cannot be null");
 		}
+		if (!directory.exists() && directory.getName().endsWith("/")) {
+			directory.mkdirs();
+		}
 		if (!directory.isDirectory()) {
 			throw new IllegalArgumentException(directory.getPath() + " must be a directory");
 		}
