@@ -39,29 +39,21 @@ public class ConventConfigurationManager {
 	}
 
 	public void unpackConfigurationFiles(String... configurationFiles) {
+		unpackConfigurationFiles(configurationFiles, false);
+	}
+
+	public void unpackConfigurationFiles(String[] configurationFiles, boolean overwrite) {
 		for (String s : configurationFiles) {
 			YamlConfiguration yc = YamlConfiguration.loadConfiguration(plugin.getResource(s));
 			try {
-				yc.save(new File(plugin.getDataFolder(), s));
+				File f = new File(plugin.getDataFolder(), s);
+				if (f.exists() && overwrite) {
+					yc.save(new File(plugin.getDataFolder(), s));
+				}
 			} catch (IOException e) {
 				plugin.getLogger().warning("Could not unpack " + s);
 			}
 		}
-	}
-
-	public ConventConfiguration getConventConfiguration(File file) throws IllegalArgumentException {
-		if (file == null) {
-			throw new IllegalArgumentException("File cannot be null");
-		}
-
-		ConventConfiguration c = null;
-		if (file.getName().endsWith(".yml")) {
-			if (!file.exists()) {
-				new ConventYamlConfiguration(plugin, file).saveDefaults(plugin.getResource(file.getName()));
-			}
-			c = new ConventYamlConfiguration(plugin, file);
-		}
-		return c;
 	}
 
 	public ConventConfigurationGroup getConventConfigurationGroup(File directory) throws IllegalArgumentException {
@@ -82,6 +74,21 @@ public class ConventConfigurationManager {
 			}
 		}
 		return ccg;
+	}
+
+	public ConventConfiguration getConventConfiguration(File file) throws IllegalArgumentException {
+		if (file == null) {
+			throw new IllegalArgumentException("File cannot be null");
+		}
+
+		ConventConfiguration c = null;
+		if (file.getName().endsWith(".yml")) {
+			if (!file.exists()) {
+				new ConventYamlConfiguration(plugin, file).saveDefaults(plugin.getResource(file.getName()));
+			}
+			c = new ConventYamlConfiguration(plugin, file);
+		}
+		return c;
 	}
 
 }
