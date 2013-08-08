@@ -62,7 +62,7 @@ public class ConventConfigurationManager {
 
 	public ConventConfigurationGroup getConventConfigurationGroup(File directory) throws IllegalArgumentException {
 		if (directory == null) {
-			throw new IllegalArgumentException(directory.getPath() + " cannot be null");
+			throw new IllegalArgumentException("directory cannot be null");
 		}
 		if (!directory.exists() && !directory.getParentFile().mkdirs()) {
 			throw new IllegalArgumentException(directory.getPath() + " does not exist and cannot be made");
