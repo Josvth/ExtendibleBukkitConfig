@@ -47,7 +47,11 @@ public class ConventConfigurationManager {
 			YamlConfiguration yc = YamlConfiguration.loadConfiguration(plugin.getResource(s));
 			try {
 				File f = new File(plugin.getDataFolder(), s);
-				if (f.exists() && overwrite) {
+				if (!f.exists()) {
+					yc.save(new File(plugin.getDataFolder(), s));
+					continue;
+				}
+				if (overwrite) {
 					yc.save(new File(plugin.getDataFolder(), s));
 				}
 			} catch (IOException e) {
