@@ -14,15 +14,17 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 
 	private final File file;
 	private final Plugin plugin;
+	private final boolean checkUpdate;
 
 	/**
 	 * Instantiates a new com.conventnunnery.libraries.config.ConventYamlConfiguration.
 	 *
 	 * @param plugin   Plugin that the file is used by
 	 * @param filename Name of the file used by the plugin
+	 * @param checkUpdate
 	 */
-	public ConventYamlConfiguration(Plugin plugin, String filename) {
-		this(plugin, new File(plugin.getDataFolder(), filename));
+	public ConventYamlConfiguration(Plugin plugin, String filename, boolean checkUpdate) {
+		this(plugin, new File(plugin.getDataFolder(), filename), checkUpdate);
 	}
 
 	/**
@@ -30,10 +32,11 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 	 *
 	 * @param file File to use as the basis
 	 */
-	public ConventYamlConfiguration(Plugin plugin, File file) {
+	public ConventYamlConfiguration(Plugin plugin, File file, boolean checkUpdate) {
 		super();
 		this.file = file;
 		this.plugin = plugin;
+		this.checkUpdate = checkUpdate;
 	}
 
 	@Override
@@ -59,7 +62,7 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 		try {
 			if (file.exists()) {
 				load(file);
-				if (needToUpdate()) {
+				if (checkUpdate && needToUpdate()) {
 					plugin.getLogger().log(Level.INFO, "Backing up " + file.getName());
 					backup();
 					plugin.getLogger().log(Level.INFO, "Updating " + file.getName());
