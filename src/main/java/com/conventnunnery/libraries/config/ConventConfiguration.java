@@ -12,6 +12,7 @@ public interface ConventConfiguration {
 
     void setDefaults(InputStream inputStream);
 
+	@Deprecated
 	void saveDefaults(InputStream inputStream);
 
 	boolean needToUpdate();
