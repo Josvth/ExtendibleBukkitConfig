@@ -34,6 +34,8 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 	 */
 	public ConventYamlConfiguration(Plugin plugin, File file, boolean checkUpdate) {
 		super();
+		if (plugin == null) throw new IllegalArgumentException("Plugin can't be null");
+		if (file == null) throw new IllegalArgumentException("File can't be null");
 		this.file = file;
 		this.plugin = plugin;
 		this.checkUpdate = checkUpdate;
@@ -56,9 +58,6 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 	 */
 	@Override
 	public boolean load() {
-		if (file == null) {
-			return false;
-		}
 		try {
 			if (file.exists()) {
 				load(file);
@@ -91,9 +90,6 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 	 */
 	@Override
 	public boolean save() {
-		if (file == null) {
-			return false;
-		}
 		try {
 			save(file);
 			return true;
@@ -120,9 +116,6 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 
 	@Override
 	public boolean needToUpdate() {
-		if (plugin == null || file == null) {
-			return false;
-		}
 		YamlConfiguration inPlugin = YamlConfiguration.loadConfiguration(plugin
 				.getResource(file.getName()));
 		if (inPlugin == null) {
@@ -135,9 +128,6 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 
 	@Override
 	public boolean backup() {
-		if (plugin == null || file == null) {
-			return false;
-		}
 		File actualFile = new File(plugin.getDataFolder(), file.getName());
 		if (!actualFile.exists()) {
 			return false;
