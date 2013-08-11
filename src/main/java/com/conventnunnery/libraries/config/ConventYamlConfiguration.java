@@ -67,7 +67,6 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 					backup();
 					plugin.getLogger().log(Level.INFO, "Updating " + file.getName());
 					saveDefaults(plugin.getResource(file.getName()));
-					load(file);
 				}
 				return true;
 			}
