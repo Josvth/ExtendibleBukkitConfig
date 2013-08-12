@@ -1,7 +1,5 @@
 package com.conventnunnery.libraries.config;
 
-import org.bukkit.configuration.MemoryConfiguration;
-import org.bukkit.configuration.MemoryConfigurationOptions;
 import org.bukkit.configuration.file.YamlConfigurationOptions;
 
 public class ConventYamlConfigurationOptions extends YamlConfigurationOptions {
