@@ -101,7 +101,7 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 	@Override
 	public boolean save() {
 		try {
-			if (!file.getParentFile().mkdirs()) return false;
+			if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) return false;
 			save(file);
 			return true;
 		} catch (IOException e) {
