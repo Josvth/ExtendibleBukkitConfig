@@ -94,6 +94,56 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 	}
 
 	/**
+	 * Loads the file specified by the constructor.
+	 *
+	 * @param update            specifies if it should update the file using the defaults if versions differ
+	 * @param createDefaultFile specifies if it should create a default file if there is no existing one
+	 * @return if the file was correctly loaded
+	 */
+	public boolean load(boolean update, boolean createDefaultFile) {
+
+		try {
+
+			if (file.exists()) {
+
+				load(file);
+
+				if (needToUpdate() && update) update();
+
+			} else if (createDefaultFile) {
+
+				options().copyDefaults(true);
+
+				return save();
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		return true;
+
+	}
+
+	/**
+	 * Updates the file with the defaults
+	 *
+	 * @return if the file was correctly updated
+	 */
+	public boolean update() {
+
+		if (options().backupOnUpdate())
+			if (!backup()) return false;
+
+		options().copyDefaults(true);
+
+		return save();
+
+	}
+
+	/**
 	 * Saves the file specified by the constructor.
 	 *
 	 * @return if the file was correctly saved
@@ -150,54 +200,9 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 		return this;
 	}
 
-	/**
-	 * Loads the file specified by the constructor.
-	 *
-	 * @param update            specifies if it should update the file using the defaults if versions differ
-	 * @param createDefaultFile specifies if it should create a default file if there is no existing one
-	 * @return if the file was correctly loaded
-	 */
-	public boolean load(boolean update, boolean createDefaultFile) {
-
-		try {
-
-			if (file.exists()) {
-
-				load(file);
-
-				if (needToUpdate() && update) update();
-
-			} else if (createDefaultFile) {
-
-				options().copyDefaults(true);
-
-				return save();
-
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-
-		return true;
-
-	}
-
-	/**
-	 * Updates the file with the defaults
-	 *
-	 * @return if the file was correctly updated
-	 */
-	public boolean update() {
-
-		if (options().backupOnUpdate())
-			if (!backup()) return false;
-
-		options().copyDefaults(true);
-
-		return save();
-
+	@Override
+	public String getVersion() {
+		return version;
 	}
 
 	/**
