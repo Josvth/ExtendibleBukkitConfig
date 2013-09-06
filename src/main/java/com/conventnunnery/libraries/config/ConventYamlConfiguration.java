@@ -158,7 +158,7 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 	@Override
 	public boolean save() {
 		try {
-			if (!file.getParentFile().mkdirs()) return false;
+			file.getParentFile().mkdirs();
 			save(file);
 			return true;
 		} catch (IOException e) {
@@ -189,7 +189,7 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 
 		try {
 
-			if (!backup.getParentFile().mkdirs()) return false;
+			backup.getParentFile().mkdirs();
 
 			save(backup);
 
