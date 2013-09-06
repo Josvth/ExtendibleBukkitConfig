@@ -88,9 +88,9 @@ public class ConventConfigurationManager {
 		ConventConfiguration c = null;
 		if (file.getName().endsWith(".yml")) {
 			if (!file.exists()) {
-				new ConventYamlConfiguration(plugin, file, true).saveDefaults(plugin.getResource(file.getName()));
+				new ConventYamlConfiguration(file, null).saveDefaults(plugin.getResource(file.getName()));
 			}
-			c = new ConventYamlConfiguration(plugin, file, true);
+			c = new ConventYamlConfiguration(file, null);
 		}
 		return c;
 	}
