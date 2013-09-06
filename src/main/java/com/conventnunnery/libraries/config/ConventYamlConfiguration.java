@@ -20,8 +20,8 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 	/**
 	 * Instantiates a new com.conventnunnery.libraries.config.ConventYamlConfiguration.
 	 *
-	 * @param plugin      Plugin that the file is used by
-	 * @param filename    Name of the file used by the plugin
+	 * @param plugin   Plugin that the file is used by
+	 * @param filename Name of the file used by the plugin
 	 * @param checkUpdate
 	 */
 	@Deprecated
@@ -151,7 +151,7 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 	@Override
 	public boolean save() {
 		try {
-			if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) return false;
+			file.getParentFile().mkdirs();
 			save(file);
 			return true;
 		} catch (IOException e) {
@@ -182,7 +182,7 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 
 		try {
 
-			if (!backup.getParentFile().mkdirs()) return false;
+			backup.getParentFile().mkdirs();
 
 			save(backup);
 
