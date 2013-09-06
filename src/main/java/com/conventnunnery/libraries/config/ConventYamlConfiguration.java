@@ -20,8 +20,8 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 	/**
 	 * Instantiates a new com.conventnunnery.libraries.config.ConventYamlConfiguration.
 	 *
-	 * @param plugin   Plugin that the file is used by
-	 * @param filename Name of the file used by the plugin
+	 * @param plugin      Plugin that the file is used by
+	 * @param filename    Name of the file used by the plugin
 	 * @param checkUpdate
 	 */
 	@Deprecated
@@ -44,6 +44,14 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 		this.version = YamlConfiguration.loadConfiguration(plugin.getResource(file.getName())).getString("version");
 	}
 
+	@Override
+	public ConventYamlConfigurationOptions options() {
+		if (options == null) {
+			options = new ConventYamlConfigurationOptions(this);
+		}
+		return (ConventYamlConfigurationOptions) options;
+	}
+
 	/**
 	 * Instantiates a new com.conventnunnery.libraries.config.ConventYamlConfiguration.
 	 *
@@ -57,7 +65,7 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 	 * Instantiates a new com.conventnunnery.libraries.config.ConventYamlConfiguration.
 	 *
 	 * @param version The version of the default values
-	 * @param file File to use as the basis
+	 * @param file    File to use as the basis
 	 */
 	public ConventYamlConfiguration(File file, String version) {
 		super();
@@ -75,11 +83,6 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 		return file.getName();
 	}
 
-	@Override
-	public FileConfiguration getFileConfiguration() {
-		return this;
-	}
-
 	/**
 	 * Loads the file specified by the constructor.
 	 *
@@ -93,17 +96,7 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 	/**
 	 * Loads the file specified by the constructor.
 	 *
-	 * @param update specifies if it should update the file using the defaults if versions differ
-	 * @return if the file was correctly loaded
-	 */
-	public boolean load(boolean update) {
-		return load(update, options().createDefaultFile());
-	}
-
-	/**
-	 * Loads the file specified by the constructor.
-	 *
-	 * @param update specifies if it should update the file using the defaults if versions differ
+	 * @param update            specifies if it should update the file using the defaults if versions differ
 	 * @param createDefaultFile specifies if it should create a default file if there is no existing one
 	 * @return if the file was correctly loaded
 	 */
@@ -142,7 +135,7 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 	public boolean update() {
 
 		if (options().backupOnUpdate())
-			if(!backup()) return false;
+			if (!backup()) return false;
 
 		options().copyDefaults(true);
 
@@ -158,7 +151,7 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 	@Override
 	public boolean save() {
 		try {
-			if (!file.getParentFile().mkdirs()) return false;
+			if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) return false;
 			save(file);
 			return true;
 		} catch (IOException e) {
@@ -203,10 +196,22 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 	}
 
 	@Override
-	public ConventYamlConfigurationOptions options() {
-		if (options == null) {
-			options = new ConventYamlConfigurationOptions(this);
-		}
-		return (ConventYamlConfigurationOptions) options;
+	public FileConfiguration getFileConfiguration() {
+		return this;
+	}
+
+	@Override
+	public String getVersion() {
+		return version;
+	}
+
+	/**
+	 * Loads the file specified by the constructor.
+	 *
+	 * @param update specifies if it should update the file using the defaults if versions differ
+	 * @return if the file was correctly loaded
+	 */
+	public boolean load(boolean update) {
+		return load(update, options().createDefaultFile());
 	}
 }
