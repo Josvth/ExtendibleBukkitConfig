@@ -23,4 +23,6 @@ public interface ConventConfiguration {
 
 	FileConfiguration getFileConfiguration();
 
+	String getVersion();
+
 }
