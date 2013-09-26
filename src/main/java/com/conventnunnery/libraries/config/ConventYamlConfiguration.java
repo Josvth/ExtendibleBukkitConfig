@@ -1,15 +1,14 @@
 package com.conventnunnery.libraries.config;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Logger;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.logging.Logger;
 
 public class ConventYamlConfiguration extends YamlConfiguration implements ConventConfiguration {
 
@@ -20,8 +19,8 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 	/**
 	 * Instantiates a new com.conventnunnery.libraries.config.ConventYamlConfiguration.
 	 *
-	 * @param plugin   Plugin that the file is used by
-	 * @param filename Name of the file used by the plugin
+	 * @param plugin      Plugin that the file is used by
+	 * @param filename    Name of the file used by the plugin
 	 * @param checkUpdate
 	 */
 	@Deprecated
@@ -94,56 +93,6 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 	}
 
 	/**
-	 * Loads the file specified by the constructor.
-	 *
-	 * @param update            specifies if it should update the file using the defaults if versions differ
-	 * @param createDefaultFile specifies if it should create a default file if there is no existing one
-	 * @return if the file was correctly loaded
-	 */
-	public boolean load(boolean update, boolean createDefaultFile) {
-
-		try {
-
-			if (file.exists()) {
-
-				load(file);
-
-				if (needToUpdate() && update) update();
-
-			} else if (createDefaultFile) {
-
-				options().copyDefaults(true);
-
-				return save();
-
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-
-		return true;
-
-	}
-
-	/**
-	 * Updates the file with the defaults
-	 *
-	 * @return if the file was correctly updated
-	 */
-	public boolean update() {
-
-		if (options().backupOnUpdate())
-			if (!backup()) return false;
-
-		options().copyDefaults(true);
-
-		return save();
-
-	}
-
-	/**
 	 * Saves the file specified by the constructor.
 	 *
 	 * @return if the file was correctly saved
@@ -203,6 +152,56 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 	@Override
 	public String getVersion() {
 		return version;
+	}
+
+	/**
+	 * Loads the file specified by the constructor.
+	 *
+	 * @param update            specifies if it should update the file using the defaults if versions differ
+	 * @param createDefaultFile specifies if it should create a default file if there is no existing one
+	 * @return if the file was correctly loaded
+	 */
+	public boolean load(boolean update, boolean createDefaultFile) {
+
+		try {
+
+			if (file.exists()) {
+
+				load(file);
+
+				if (needToUpdate() && update) update();
+
+			} else if (createDefaultFile) {
+
+				options().copyDefaults(true);
+
+				return save();
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		return true;
+
+	}
+
+	/**
+	 * Updates the file with the defaults
+	 *
+	 * @return if the file was correctly updated
+	 */
+	public boolean update() {
+
+		if (options().backupOnUpdate())
+			if (!backup()) return false;
+
+		options().copyDefaults(true);
+
+		return save();
+
 	}
 
 	/**
