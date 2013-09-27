@@ -3,44 +3,13 @@ package com.conventnunnery.libraries.config;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Logger;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
 
 public class ConventYamlConfiguration extends YamlConfiguration implements ConventConfiguration {
 
 	private final File file;
-	private final Logger logger;
 	private final String version;
-
-	/**
-	 * Instantiates a new com.conventnunnery.libraries.config.ConventYamlConfiguration.
-	 *
-	 * @param plugin      Plugin that the file is used by
-	 * @param filename    Name of the file used by the plugin
-	 * @param checkUpdate
-	 */
-	@Deprecated
-	public ConventYamlConfiguration(Plugin plugin, String filename, boolean checkUpdate) {
-		this(plugin, new File(plugin.getDataFolder(), filename), checkUpdate);
-	}
-
-	/**
-	 * Instantiates a new com.conventnunnery.libraries.config.ConventYamlConfiguration.
-	 *
-	 * @param file File to use as the basis
-	 */
-	@Deprecated
-	public ConventYamlConfiguration(Plugin plugin, File file, boolean checkUpdate) {
-		super();
-
-		this.logger = plugin.getLogger();
-		this.file = file;
-		this.options().updateOnLoad(checkUpdate);
-		this.version = YamlConfiguration.loadConfiguration(plugin.getResource(file.getName())).getString("version");
-	}
 
 	@Override
 	public ConventYamlConfigurationOptions options() {
@@ -69,9 +38,7 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 		super();
 
 		this.file = file;
-		this.logger = Bukkit.getLogger();
 		this.version = version;
-
 	}
 
 	@Override
@@ -101,7 +68,6 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 			save(file);
 			return true;
 		} catch (IOException e) {
-			logger.severe(e.getMessage());
 			return false;
 		}
 	}
