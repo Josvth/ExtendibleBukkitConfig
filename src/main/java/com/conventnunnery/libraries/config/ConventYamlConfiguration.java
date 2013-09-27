@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Logger;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -68,8 +67,6 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 	 */
 	public ConventYamlConfiguration(File file, String version) {
 		super();
-
-		Validate.notNull(file, "File cannot be null.");
 
 		this.file = file;
 		this.logger = Bukkit.getLogger();
