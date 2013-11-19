@@ -1,8 +1,7 @@
-package com.conventnunnery.libraries.config;
-
-import org.bukkit.configuration.file.FileConfiguration;
+package net.nunnerycode.bukkit.libraries.config;
 
 import java.io.InputStream;
+import org.bukkit.configuration.file.FileConfiguration;
 
 public interface ConventConfiguration {
 
