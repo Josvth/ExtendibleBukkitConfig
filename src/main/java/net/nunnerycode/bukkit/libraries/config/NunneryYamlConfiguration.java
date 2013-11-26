@@ -6,18 +6,18 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-public class ConventYamlConfiguration extends YamlConfiguration implements ConventConfiguration {
+public class NunneryYamlConfiguration extends YamlConfiguration implements NunneryConfiguration {
 
 	private final File file;
 	private final String version;
-	private ConventYamlConfigurationOptions options;
+	private NunneryYamlConfigurationOptions options;
 	private long lastModified = 0;
 
-	public ConventYamlConfiguration(File file) {
+	public NunneryYamlConfiguration(File file) {
 		this(file, null);
 	}
 
-	public ConventYamlConfiguration(File file, String version) {
+	public NunneryYamlConfiguration(File file, String version) {
 		super();
 
 		this.file = file;
@@ -60,9 +60,9 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 	}
 
 	@Override
-	public ConventYamlConfigurationOptions options() {
+	public NunneryYamlConfigurationOptions options() {
 		if (options == null) {
-			options = new ConventYamlConfigurationOptions(this);
+			options = new NunneryYamlConfigurationOptions(this);
 		}
 		return options;
 	}
@@ -136,10 +136,10 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 		return file != null ? file.getName() : "";
 	}
 
-	public static ConventYamlConfiguration loadConfiguration(File file) {
+	public static NunneryYamlConfiguration loadConfiguration(File file) {
 		Validate.notNull(file, "File cannot be null");
 
-		ConventYamlConfiguration c = new ConventYamlConfiguration(file);
+		NunneryYamlConfiguration c = new NunneryYamlConfiguration(file);
 		c.load();
 
 		return c;

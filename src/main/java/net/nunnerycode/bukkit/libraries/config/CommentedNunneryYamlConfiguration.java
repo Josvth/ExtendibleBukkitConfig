@@ -11,16 +11,16 @@ import org.apache.commons.lang.Validate;
 /**
  * Bastardized and modified version of dumptruckman's CommentedYamlConfiguration
  */
-public class CommentedConventYamlConfiguration extends ConventYamlConfiguration {
+public class CommentedNunneryYamlConfiguration extends NunneryYamlConfiguration {
 
 	private Map<String, String> comments;
 
-	public CommentedConventYamlConfiguration(File file) {
+	public CommentedNunneryYamlConfiguration(File file) {
 		super(file);
 		comments = new HashMap<String, String>();
 	}
 
-	public CommentedConventYamlConfiguration(File file, String version) {
+	public CommentedNunneryYamlConfiguration(File file, String version) {
 		super(file, version);
 		comments = new HashMap<String, String>();
 	}
@@ -225,10 +225,10 @@ public class CommentedConventYamlConfiguration extends ConventYamlConfiguration 
 		comments.put(path, commentstring.toString());
 	}
 
-	public static CommentedConventYamlConfiguration loadConfiguration(File file) {
+	public static CommentedNunneryYamlConfiguration loadConfiguration(File file) {
 		Validate.notNull(file, "File cannot be null");
 
-		CommentedConventYamlConfiguration c = new CommentedConventYamlConfiguration(file);
+		CommentedNunneryYamlConfiguration c = new CommentedNunneryYamlConfiguration(file);
 		c.load();
 
 		return c;

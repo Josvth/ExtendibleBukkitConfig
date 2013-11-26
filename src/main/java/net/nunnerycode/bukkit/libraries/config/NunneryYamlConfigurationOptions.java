@@ -3,13 +3,13 @@ package net.nunnerycode.bukkit.libraries.config;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.file.YamlConfigurationOptions;
 
-public class ConventYamlConfigurationOptions extends YamlConfigurationOptions {
+public class NunneryYamlConfigurationOptions extends YamlConfigurationOptions {
 	private boolean updateOnLoad = true;
 	private boolean backupOnUpdate = false;
 	private boolean createDefaultFile = true;
 	private boolean autoReload = false;
 
-	protected ConventYamlConfigurationOptions(YamlConfiguration configuration) {
+	protected NunneryYamlConfigurationOptions(YamlConfiguration configuration) {
 		super(configuration);
 	}
 
