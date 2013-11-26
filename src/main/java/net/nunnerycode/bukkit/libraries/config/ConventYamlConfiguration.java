@@ -139,7 +139,10 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 	public static ConventYamlConfiguration loadConfiguration(File file) {
 		Validate.notNull(file, "File cannot be null");
 
-		return new ConventYamlConfiguration(file);
+		ConventYamlConfiguration c = new ConventYamlConfiguration(file);
+		c.load();
+
+		return c;
 	}
 
 }
