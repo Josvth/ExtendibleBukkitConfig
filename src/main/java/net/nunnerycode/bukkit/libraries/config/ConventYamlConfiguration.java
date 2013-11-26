@@ -2,6 +2,7 @@ package net.nunnerycode.bukkit.libraries.config;
 
 import java.io.File;
 import java.io.IOException;
+import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -133,6 +134,12 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 	@Override
 	public String getName() {
 		return file != null ? file.getName() : "";
+	}
+
+	public static ConventYamlConfiguration loadConfiguration(File file) {
+		Validate.notNull(file, "File cannot be null");
+
+		return new ConventYamlConfiguration(file);
 	}
 
 }
