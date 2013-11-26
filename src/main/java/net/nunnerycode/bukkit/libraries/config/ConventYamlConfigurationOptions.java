@@ -5,7 +5,7 @@ import org.bukkit.configuration.file.YamlConfigurationOptions;
 
 public class ConventYamlConfigurationOptions extends YamlConfigurationOptions {
 	private boolean updateOnLoad = true;
-	private boolean backupOnLoad = false;
+	private boolean backupOnUpdate = false;
 	private boolean createDefaultFile = true;
 	private boolean autoReload = false;
 
@@ -17,8 +17,8 @@ public class ConventYamlConfigurationOptions extends YamlConfigurationOptions {
 		return updateOnLoad;
 	}
 
-	public boolean backupOnLoad() {
-		return backupOnLoad;
+	public boolean backupOnUpdate() {
+		return backupOnUpdate;
 	}
 
 	public boolean createDefaultFile() {
@@ -33,8 +33,8 @@ public class ConventYamlConfigurationOptions extends YamlConfigurationOptions {
 		updateOnLoad = b;
 	}
 
-	public void backupOnLoad(boolean b) {
-		backupOnLoad = b;
+	public void backupOnUpdate(boolean b) {
+		backupOnUpdate = b;
 	}
 
 	public void createDefaultFile(boolean b) {

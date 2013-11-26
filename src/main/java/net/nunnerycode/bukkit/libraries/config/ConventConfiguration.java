@@ -15,12 +15,16 @@ public interface ConventConfiguration {
 
 	boolean backup();
 
-	boolean reload();
-
 	String getName();
 
 	FileConfiguration getFileConfiguration();
 
 	String getVersion();
+
+	long getLastModified();
+
+	void set(String path, Object value);
+
+	Object get(String path, Object def);
 
 }
