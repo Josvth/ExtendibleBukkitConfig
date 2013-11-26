@@ -3,6 +3,7 @@ package net.nunnerycode.bukkit.libraries.config;
 import java.io.File;
 import java.io.IOException;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -112,6 +113,7 @@ public class NunneryYamlConfiguration extends YamlConfiguration implements Nunne
 	public Object get(String path, Object def) {
 		if (lastModified <= this.file.lastModified() && options().autoReload()) {
 			load();
+			Bukkit.getPluginManager().callEvent(new NunneryConfigurationReloadEvent(this));
 		}
 		return super.get(path, def);
 	}
