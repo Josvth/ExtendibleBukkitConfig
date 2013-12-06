@@ -3,11 +3,15 @@ package com.conventnunnery.libraries.config;
 import com.google.common.io.Files;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.logging.Level;
+import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -15,8 +19,12 @@ import sun.nio.cs.StreamDecoder;
 
 public class ConventYamlConfiguration extends YamlConfiguration implements ConventConfiguration {
 
-	private final File file;
-	private final String version;
+	private File file;
+	private String version;
+
+	public ConventYamlConfiguration() {
+		this(null, null);
+	}
 
 	/**
 	 * Instantiates a new com.conventnunnery.libraries.config.ConventYamlConfiguration.
@@ -87,6 +95,14 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 
 		return true;
 
+	}
+
+	@Override
+	public void load(File file) throws IOException, InvalidConfigurationException {
+		super.load(file);
+		if (this.file == null) {
+			this.file = file;
+		}
 	}
 
 	@Override
@@ -227,5 +243,36 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 	 */
 	public boolean load(boolean update) {
 		return load(update, options().createDefaultFile());
+	}
+
+	public static ConventYamlConfiguration loadConfiguration(File file) {
+		Validate.notNull(file, "File cannot be null");
+
+		ConventYamlConfiguration config = new ConventYamlConfiguration();
+
+		try {
+			config.load(file);
+		} catch (FileNotFoundException ignored) {
+		} catch (InvalidConfigurationException ex) {
+			Bukkit.getLogger().log(Level.SEVERE, "Cannot load " + file , ex);
+		}
+
+		return config;
+	}
+
+	public static ConventYamlConfiguration loadConfiguration(InputStream inputStream) {
+		Validate.notNull(inputStream, "Stream cannot be null");
+
+		ConventYamlConfiguration config = new ConventYamlConfiguration();
+
+		try {
+			config.load(inputStream);
+		} catch (IOException ex) {
+			Bukkit.getLogger().log(Level.SEVERE, "Cannot load configuration from stream", ex);
+		} catch (InvalidConfigurationException ex) {
+			Bukkit.getLogger().log(Level.SEVERE, "Cannot load configuration from stream", ex);
+		}
+
+		return config;
 	}
 }
