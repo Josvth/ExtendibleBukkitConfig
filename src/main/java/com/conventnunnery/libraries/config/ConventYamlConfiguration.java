@@ -3,7 +3,6 @@ package com.conventnunnery.libraries.config;
 import com.google.common.io.Files;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -252,7 +251,7 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 
 		try {
 			config.load(file);
-		} catch (FileNotFoundException ignored) {
+		} catch (IOException ignored) {
 		} catch (InvalidConfigurationException ex) {
 			Bukkit.getLogger().log(Level.SEVERE, "Cannot load " + file , ex);
 		}
