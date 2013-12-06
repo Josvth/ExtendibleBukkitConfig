@@ -1,10 +1,17 @@
 package com.conventnunnery.libraries.config;
 
+import com.google.common.io.Files;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import sun.nio.cs.StreamDecoder;
 
 public class ConventYamlConfiguration extends YamlConfiguration implements ConventConfiguration {
 
@@ -80,6 +87,51 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 
 		return true;
 
+	}
+
+	@Override
+	public void load(InputStream stream) throws IOException, InvalidConfigurationException {
+		if (stream == null) {
+			throw new IllegalArgumentException("Stream cannot be null");
+		}
+
+		String encoding = StreamDecoder.forInputStreamReader(stream, this, (String)null).getEncoding();
+		InputStreamReader reader = new InputStreamReader(stream, encoding);
+		StringBuilder builder = new StringBuilder();
+		BufferedReader input = new BufferedReader(reader);
+
+		try {
+			String line;
+
+			while ((line = input.readLine()) != null) {
+				builder.append(line);
+				builder.append('\n');
+			}
+		} finally {
+			input.close();
+		}
+
+		loadFromString(builder.toString());
+	}
+
+	@Override
+	public void save(File file) throws IOException {
+		if (file == null) {
+			throw new IllegalArgumentException("File cannot be null");
+		}
+
+		Files.createParentDirs(file);
+
+		String data = saveToString();
+
+		FileOutputStream stream = new FileOutputStream(file);
+		OutputStreamWriter writer = new OutputStreamWriter(stream, "UTF-8");
+
+		try {
+			writer.write(data);
+		} finally {
+			writer.close();
+		}
 	}
 
 	/**
