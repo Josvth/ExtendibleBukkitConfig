@@ -131,7 +131,9 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 
 		try {
 
-			backup.getParentFile().mkdirs();
+			Files.createParentDirs(backup);
+
+			Bukkit.getLogger().info("Backing up " + file.getPath());
 
 			save(backup);
 
@@ -247,7 +249,7 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 	 * @return if the file was correctly updated
 	 */
 	public boolean update() {
-
+		Bukkit.getLogger().info("Updating " + file.getPath());
 		if (options().backupOnUpdate()) {
 			if (!backup()) {
 				return false;
