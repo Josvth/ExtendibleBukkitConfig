@@ -1,14 +1,6 @@
 package com.conventnunnery.libraries.config;
 
 import com.google.common.io.Files;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.logging.Level;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -16,269 +8,259 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import sun.nio.cs.StreamDecoder;
 
+import java.io.*;
+import java.util.logging.Level;
+
 public class ConventYamlConfiguration extends YamlConfiguration implements ConventConfiguration {
 
-	private File file;
-	private String version;
+    private File file;
+    private String version;
 
-	public ConventYamlConfiguration() {
-		this(null, null);
-	}
+    public ConventYamlConfiguration() {
+        this(null, null);
+    }
 
-	/**
-	 * Instantiates a new com.conventnunnery.libraries.config.ConventYamlConfiguration.
-	 *
-	 * @param version The version of the default values
-	 * @param file    File to use as the basis
-	 */
-	public ConventYamlConfiguration(File file, String version) {
-		super();
+    /**
+     * Instantiates a new com.conventnunnery.libraries.config.ConventYamlConfiguration.
+     *
+     * @param version The version of the default values
+     * @param file    File to use as the basis
+     */
+    public ConventYamlConfiguration(File file, String version) {
+        super();
 
-		this.file = file;
-		this.version = version;
-	}
+        this.file = file;
+        this.version = version;
+    }
 
-	/**
-	 * Instantiates a new com.conventnunnery.libraries.config.ConventYamlConfiguration.
-	 *
-	 * @param file File to use as the basis
-	 */
-	public ConventYamlConfiguration(File file) {
-		this(file, null);
-	}
+    /**
+     * Instantiates a new com.conventnunnery.libraries.config.ConventYamlConfiguration.
+     *
+     * @param file File to use as the basis
+     */
+    public ConventYamlConfiguration(File file) {
+        this(file, null);
+    }
 
-	public static ConventYamlConfiguration loadConfiguration(File file) {
-		Validate.notNull(file, "File cannot be null");
+    public static ConventYamlConfiguration loadConfiguration(File file) {
+        Validate.notNull(file, "File cannot be null");
 
-		ConventYamlConfiguration config = new ConventYamlConfiguration();
+        ConventYamlConfiguration config = new ConventYamlConfiguration();
 
-		try {
-			config.load(file);
-		} catch (IOException ignored) {
-		} catch (InvalidConfigurationException ex) {
-			Bukkit.getLogger().log(Level.SEVERE, "Cannot load " + file, ex);
-		}
+        try {
+            config.load(file);
+        } catch (IOException ignored) {
+        } catch (InvalidConfigurationException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "Cannot load " + file, ex);
+        }
 
-		return config;
-	}
+        return config;
+    }
 
-	public static ConventYamlConfiguration loadConfiguration(InputStream inputStream) {
-		Validate.notNull(inputStream, "Stream cannot be null");
+    public static ConventYamlConfiguration loadConfiguration(InputStream inputStream) {
+        Validate.notNull(inputStream, "Stream cannot be null");
 
-		ConventYamlConfiguration config = new ConventYamlConfiguration();
+        ConventYamlConfiguration config = new ConventYamlConfiguration();
 
-		try {
-			config.load(inputStream);
-		} catch (IOException ex) {
-			Bukkit.getLogger().log(Level.SEVERE, "Cannot load configuration from stream", ex);
-		} catch (InvalidConfigurationException ex) {
-			Bukkit.getLogger().log(Level.SEVERE, "Cannot load configuration from stream", ex);
-		}
+        try {
+            config.load(inputStream);
+        } catch (IOException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "Cannot load configuration from stream", ex);
+        } catch (InvalidConfigurationException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "Cannot load configuration from stream", ex);
+        }
 
-		return config;
-	}
+        return config;
+    }
 
-	@Override
-	public String getName() {
-		return file.getName();
-	}
+    @Override
+    public String getName() {
+        return file.getName();
+    }
 
-	/**
-	 * Loads the file specified by the constructor.
-	 *
-	 * @return if the file was correctly loaded
-	 */
-	@Override
-	public boolean load() {
-		return load(options().updateOnLoad(), options().createDefaultFile());
-	}
+    /**
+     * Loads the file specified by the constructor.
+     *
+     * @return if the file was correctly loaded
+     */
+    @Override
+    public boolean load() {
+        return load(options().updateOnLoad(), options().createDefaultFile());
+    }
 
-	/**
-	 * Saves the file specified by the constructor.
-	 *
-	 * @return if the file was correctly saved
-	 */
-	@Override
-	public boolean save() {
-		try {
-			Files.createParentDirs(file);
-			save(file);
-			return true;
-		} catch (IOException e) {
-			return false;
-		}
-	}
+    /**
+     * Saves the file specified by the constructor.
+     *
+     * @return if the file was correctly saved
+     */
+    @Override
+    public boolean save() {
+        try {
+            save(file);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
 
-	@Override
-	public void setDefaults(final InputStream inputStream) {
-		super.setDefaults(YamlConfiguration.loadConfiguration(inputStream));
-	}
+    @Override
+    public void setDefaults(final InputStream inputStream) {
+        super.setDefaults(YamlConfiguration.loadConfiguration(inputStream));
+    }
 
-	@Override
-	public void saveDefaults(InputStream inputStream) {
+    @Override
+    public boolean needToUpdate() {
+        return getString("version") == null || (getVersion() != null && !getVersion().equalsIgnoreCase(getString("version")));
+    }
 
-	}
+    @Override
+    public boolean backup() {
 
-	@Override
-	public boolean needToUpdate() {
-		return getString("version") == null || (version != null && !version.equalsIgnoreCase(getString("version")));
-	}
+        File backup = new File(file.getParent(), file.getName().replace(".yml", "_old.yml"));
 
-	@Override
-	public boolean backup() {
+        try {
 
-		File backup = new File(file.getParent(), file.getName().replace(".yml", "_old.yml"));
+            Files.createParentDirs(backup);
 
-		try {
+            Bukkit.getLogger().info("Backing up " + file.getPath());
 
-			Files.createParentDirs(backup);
+            save(backup);
 
-			Bukkit.getLogger().info("Backing up " + file.getPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
 
-			save(backup);
+        return true;
 
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
+    }
 
-		return true;
+    @Override
+    public String getVersion() {
+        return version;
+    }
 
-	}
+    @Override
+    public void save(File file) throws IOException {
+        if (file == null) {
+            throw new IllegalArgumentException("File cannot be null");
+        }
 
-	@Override
-	public FileConfiguration getFileConfiguration() {
-		return this;
-	}
+        Files.createParentDirs(file);
 
-	@Override
-	public String getVersion() {
-		return version;
-	}
+        String data = saveToString();
 
-	@Override
-	public void save(File file) throws IOException {
-		if (file == null) {
-			throw new IllegalArgumentException("File cannot be null");
-		}
+        FileOutputStream stream = new FileOutputStream(file);
+        OutputStreamWriter writer = new OutputStreamWriter(stream, "UTF-8");
 
-		Files.createParentDirs(file);
+        try {
+            writer.write(data);
+        } finally {
+            writer.close();
+        }
+    }
 
-		String data = saveToString();
+    @Override
+    public void load(File file) throws IOException, InvalidConfigurationException {
+        super.load(file);
+        if (this.file == null) {
+            this.file = file;
+        }
+    }
 
-		FileOutputStream stream = new FileOutputStream(file);
-		OutputStreamWriter writer = new OutputStreamWriter(stream, "UTF-8");
+    @Override
+    public void load(InputStream stream) throws IOException, InvalidConfigurationException {
+        if (stream == null) {
+            throw new IllegalArgumentException("Stream cannot be null");
+        }
 
-		try {
-			writer.write(data);
-		} finally {
-			writer.close();
-		}
-	}
+        String encoding = StreamDecoder.forInputStreamReader(stream, this, (String) null).getEncoding();
+        InputStreamReader reader = new InputStreamReader(stream, encoding);
+        StringBuilder builder = new StringBuilder();
+        BufferedReader input = new BufferedReader(reader);
 
-	@Override
-	public void load(File file) throws IOException, InvalidConfigurationException {
-		super.load(file);
-		if (this.file == null) {
-			this.file = file;
-		}
-	}
+        try {
+            String line;
 
-	@Override
-	public void load(InputStream stream) throws IOException, InvalidConfigurationException {
-		if (stream == null) {
-			throw new IllegalArgumentException("Stream cannot be null");
-		}
+            while ((line = input.readLine()) != null) {
+                builder.append(line);
+                builder.append('\n');
+            }
+        } finally {
+            input.close();
+        }
 
-		String encoding = StreamDecoder.forInputStreamReader(stream, this, (String) null).getEncoding();
-		InputStreamReader reader = new InputStreamReader(stream, encoding);
-		StringBuilder builder = new StringBuilder();
-		BufferedReader input = new BufferedReader(reader);
+        loadFromString(builder.toString());
+    }
 
-		try {
-			String line;
+    /**
+     * Loads the file specified by the constructor.
+     *
+     * @param update            specifies if it should update the file using the defaults if versions differ
+     * @param createDefaultFile specifies if it should create a default file if there is no existing one
+     * @return if the file was correctly loaded
+     */
+    public boolean load(boolean update, boolean createDefaultFile) {
 
-			while ((line = input.readLine()) != null) {
-				builder.append(line);
-				builder.append('\n');
-			}
-		} finally {
-			input.close();
-		}
+        try {
 
-		loadFromString(builder.toString());
-	}
+            if (file.exists()) {
 
-	/**
-	 * Loads the file specified by the constructor.
-	 *
-	 * @param update            specifies if it should update the file using the defaults if versions differ
-	 * @param createDefaultFile specifies if it should create a default file if there is no existing one
-	 * @return if the file was correctly loaded
-	 */
-	public boolean load(boolean update, boolean createDefaultFile) {
+                load(file);
 
-		try {
+                if (needToUpdate() && update) update();
 
-			if (file.exists()) {
+            } else if (createDefaultFile) {
 
-				load(file);
+                return save();
 
-				if (needToUpdate() && update) update();
+            }
 
-			} else if (createDefaultFile) {
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
 
-				options().copyDefaults(true);
+        return true;
 
-				return save();
+    }
 
-			}
+    /**
+     * Updates the file with the defaults
+     *
+     * @return if the file was correctly updated
+     */
+    public boolean update() {
+        Bukkit.getLogger().info("Updating " + file.getPath());
+        if (options().backupOnUpdate()) {
+            if (!backup()) {
+                return false;
+            }
+            if (!file.delete()) {
+                return false;
+            }
+        }
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+        options().copyDefaults(true);
 
-		return true;
+        return save();
+    }
 
-	}
+    @Override
+    public ConventYamlConfigurationOptions options() {
+        if (options == null) {
+            options = new ConventYamlConfigurationOptions(this);
+        }
+        return (ConventYamlConfigurationOptions) options;
+    }
 
-	/**
-	 * Updates the file with the defaults
-	 *
-	 * @return if the file was correctly updated
-	 */
-	public boolean update() {
-		Bukkit.getLogger().info("Updating " + file.getPath());
-		if (options().backupOnUpdate()) {
-			if (!backup()) {
-				return false;
-			}
-			if (!file.delete()) {
-				return false;
-			}
-		}
-
-		options().copyDefaults(true);
-
-		return save();
-	}
-
-	@Override
-	public ConventYamlConfigurationOptions options() {
-		if (options == null) {
-			options = new ConventYamlConfigurationOptions(this);
-		}
-		return (ConventYamlConfigurationOptions) options;
-	}
-
-	/**
-	 * Loads the file specified by the constructor.
-	 *
-	 * @param update specifies if it should update the file using the defaults if versions differ
-	 * @return if the file was correctly loaded
-	 */
-	public boolean load(boolean update) {
-		return load(update, options().createDefaultFile());
-	}
+    /**
+     * Loads the file specified by the constructor.
+     *
+     * @param update specifies if it should update the file using the defaults if versions differ
+     * @return if the file was correctly loaded
+     */
+    public boolean load(boolean update) {
+        return load(update, options().createDefaultFile());
+    }
 }
