@@ -212,6 +212,8 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
 
             } else if (createDefaultFile) {
 
+                options().copyDefaults(true);
+
                 return save();
 
             }
@@ -242,6 +244,8 @@ public class ConventYamlConfiguration extends YamlConfiguration implements Conve
         }
 
         options().copyDefaults(true);
+
+        set("version", getVersion());
 
         return save();
     }
